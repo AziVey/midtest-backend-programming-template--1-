@@ -1,5 +1,11 @@
 const { errorResponder, errorTypes } = require('../../../core/errors');
 const authenticationServices = require('./authentication-service');
+const rateLimit = require('express-rate-limit');
+
+const loginLimiter = rateLimit({
+  windowMs: 30 * 60 * 1000, // 30 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+});
 
 /**
  * Handle login request
@@ -19,9 +25,16 @@ async function login(request, response, next) {
     );
 
     if (!loginSuccess) {
+      console.log(
+        `[${new Date().toISOString()}] User ${email} gagal login. Attempt = ${request.rateLimit.current}`
+      );
       throw errorResponder(
         errorTypes.INVALID_CREDENTIALS,
         'Wrong email or password'
+      );
+    } else {
+      console.log(
+        `[${new Date().toISOString()}] User ${email} berhasil login.`
       );
     }
 
@@ -33,4 +46,5 @@ async function login(request, response, next) {
 
 module.exports = {
   login,
+  loginLimiter,
 };

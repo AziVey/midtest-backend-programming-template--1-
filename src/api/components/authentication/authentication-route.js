@@ -5,6 +5,7 @@ const authenticationValidators = require('./authentication-validator');
 const celebrate = require('../../../core/celebrate-wrappers');
 
 const route = express.Router();
+const { loginLimiter } = require('./authentication-controller');
 
 module.exports = (app) => {
   app.use('/authentication', route);
@@ -12,6 +13,7 @@ module.exports = (app) => {
   route.post(
     '/login',
     celebrate(authenticationValidators.login),
+    loginLimiter,
     authenticationControllers.login
   );
 };
