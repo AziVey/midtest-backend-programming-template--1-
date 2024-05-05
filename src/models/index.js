@@ -3,6 +3,7 @@ const config = require('../core/config');
 const logger = require('../core/logger')('app');
 
 const usersSchema = require('./users-schema');
+const productsSchema = require('./product-schema');
 
 mongoose.connect(`${config.database.connection}/${config.database.name}`, {
   useNewUrlParser: true,
@@ -14,8 +15,10 @@ db.once('open', () => {
 });
 
 const User = mongoose.model('users', mongoose.Schema(usersSchema));
+const Product = mongoose.model('product', mongoose.Schema(productsSchema));
 
 module.exports = {
   mongoose,
   User,
+  Product,
 };
